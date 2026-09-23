@@ -6,6 +6,7 @@ local game = {}
 local bossGen = Boss:new()
 local userGen = User:new()
 
+-- header para os menus
 local function printHeader()
     print("------------------------------")
     print("     BOSS FIGHT SIMULATOR")
@@ -13,6 +14,7 @@ local function printHeader()
     print("")
 end
 
+-- menu principal
 function game.menuScreen()
     printHeader()
     print("1. Iniciar Luta")
@@ -23,6 +25,7 @@ function game.menuScreen()
     return io.read("n")
 end
 
+-- menu das builds
 function game.buildScreen()
     local running = true
     while running do
@@ -38,6 +41,7 @@ function game.buildScreen()
     end
 end
 
+-- função responsável pelos turnos da partida
 function game.turnoIniciar()
     print("------------------------------")
     print("")
@@ -45,11 +49,20 @@ function game.turnoIniciar()
     print("")
     print("Descrição: Vindo das terras de Miskogyor, Sindron é um monarca louco por poder que, em busca da imortalidade, acabou contraindo uma rara variante da Lepra causada pelo consumo do sangue de um titã. Por conta disso, O Leproso se tornou um homem fisicamente fraco, mas extremamente perigoso, sendo capaz de imbuir sua lâmina com a doença maldita. Seus ataques são extremamente fortes, mas sua defesa deixa a deseja. Incapaz de desviar por conta de sua condição.")
     print("")
-	print("STATUS:")
+	print("BOSS:")
     print(string.format("Vida: %.3f", bossGen.vida))
     print(string.format("Forca: %.1f", bossGen.forca))
     print(string.format("Defesa: %.1f", bossGen.defesa))
-    print(string.format("Vida: %.1f", bossGen.agilidade))
+    print(string.format("Agilidade: %.1f", bossGen.agilidade))
+    print("")
+    print("PLAYER:")
+    print(string.format("Vida: %.3f", userGen.vida))
+    print(string.format("Forca: %.1f", userGen.forca))
+    print(string.format("Defesa: %.1f", userGen.defesa))
+    print(string.format("Agilidade: %.1f", userGen.agilidade))
+    print("")
+    print("------------------------------")
+    print("")
 end
 
 function game.Start()
@@ -73,6 +86,17 @@ function game.Start()
                 end
                 if bossGen:isDead() then
                     print("Parabéns! Você derrotou o chefão!")
+                    print("")
+                    break
+                end
+                if userGen:chanceEsquiva() then
+                    print("Você se esquivou!")
+                else
+                    local danoTomado = bossGen:attack(userGen)
+                    userGen:takeDamage(danoTomado)
+                end
+                if userGen:isDead() then
+                    print("Você perdeu!")
                     print("")
                     break
                 end
