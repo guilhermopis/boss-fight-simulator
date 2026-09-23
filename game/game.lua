@@ -1,12 +1,10 @@
 local Boss = require("entities.boss")
 local User = require("entities.user")
 
-
 local game = {}
 
 local bossGen = Boss:new()
 local userGen = User:new()
-
 
 local function printHeader()
     print("------------------------------")
@@ -46,14 +44,13 @@ function game.turnoIniciar()
     print("Sindron, O Leproso")
     print("")
     print("Descrição: Vindo das terras de Miskogyor, Sindron é um monarca louco por poder que, em busca da imortalidade, acabou contraindo uma rara variante da Lepra causada pelo consumo do sangue de um titã. Por conta disso, O Leproso se tornou um homem fisicamente fraco, mas extremamente perigoso, sendo capaz de imbuir sua lâmina com a doença maldita. Seus ataques são extremamente fortes, mas sua defesa deixa a deseja. Incapaz de desviar por conta de sua condição.")
+    print("")
 	print("STATUS:")
     print(string.format("Vida: %.3f", bossGen.vida))
     print(string.format("Forca: %.1f", bossGen.forca))
     print(string.format("Defesa: %.1f", bossGen.defesa))
     print(string.format("Vida: %.1f", bossGen.agilidade))
 end
-
-
 
 function game.Start()
     local running = true
