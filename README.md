@@ -31,10 +31,10 @@ Primeiro protótipo jogável do Boss Fight Simulator.
 
 ## Roadmap
 
-* [ ] Ataques dos bosses
-* [ ] Condição de derrota
+* [x] Ataques dos bosses
+* [x] Condição de derrota
 * [ ] Sistema completo de turnos
-* [ ] Ação de guarda
+* [x] Ação de guarda
 * [ ] Escolha de boss
 * [ ] Sindron, O Leproso
 * [ ] CX-486, O Autômata
