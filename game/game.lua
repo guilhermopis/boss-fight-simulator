@@ -67,13 +67,23 @@ end
 
 function game.Start()
     local running = true
+    os.execute("chcp 65001 > NUL")
     while running do
-        os.execute("chcp 65001 > NUL")
         local choiceUser = game.menuScreen()
         if choiceUser == 1 then
-            while bossGen:isAlive() do
+            while bossGen:isAlive() and userGen:isAlive() do
+                -- inicio do turno do player
+                if userGen.guarda then
+                    userGen:baixarGuarda()
+                end
                 game.turnoIniciar()
-                local es = io.read("n")
+                local es
+                repeat
+                    es = io.read("n")
+                    if es ~= 1 and es ~= 2 then
+                        print("Escolha errada. Tente novamente.")
+                    end
+                until es == 1 or es == 2
                 if es == 1 then
                     if bossGen:chanceEsquiva() then
                         print("O boss desviou.")
@@ -81,8 +91,8 @@ function game.Start()
                         local danoTomado = userGen:attack(bossGen)
                         bossGen:takeDamage(danoTomado)
                     end
-                else
-                    print("Escolha inválida otário")
+                elseif es == 2 then
+                    userGen:levantarGuarda()
                 end
                 if bossGen:isDead() then
                     print("Parabéns! Você derrotou o chefão!")

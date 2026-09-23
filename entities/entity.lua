@@ -4,13 +4,14 @@ local Entity = class("Entity")
 
 local escalaDefesa <const> = 0.2
 
-function Entity:initialize(vida, vidaMax, dano, forca, defesa, agilidade)
+function Entity:initialize(vida, vidaMax, dano, forca, defesa, agilidade, guarda)
     self.vida = vida
     self.vidaMax = vidaMax
     self.dano = dano
     self.forca = forca
     self.defesa = defesa
     self.agilidade = agilidade
+    self.guarda = false
 end
 
 -- retorna a vida da entidade
@@ -59,6 +60,20 @@ end
 -- calcula a chance da entidade se esquivar
 function Entity:chanceEsquiva()
     return math.random(1, 10) <= self.agilidade
+end
+
+function Entity:levantarGuarda()
+    if not self.guarda then
+        self.defesa = self.defesa + 2
+        self.guarda = true
+    end
+end
+
+function Entity:baixarGuarda()
+    if self.guarda then
+        self.defesa = self.defesa - 2
+        self.guarda = false
+    end
 end
 
 return Entity
