@@ -69,7 +69,7 @@ function game.Start()
                         print("O boss desviou.")
                     else
                         local danoTomado = userGen:attack(bossGen)
-                    bossGen:takeDamage(danoTomado)
+                        bossGen:takeDamage(danoTomado)
                     end
                 else
                     print("Escolha inválida otário")
