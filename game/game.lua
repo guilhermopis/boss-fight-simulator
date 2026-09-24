@@ -1,10 +1,15 @@
-local Boss = require("entities.boss")
+local Sindron = require("entities.sindron")
+local Cx486 = require("entities.cx486")
+local Yengror = require("entities.yengror")
 local User = require("entities.user")
 
 local game = {}
 
-local bossGen = Boss:new()
-local userGen = User:new()
+local bosses = {
+    [1] = Sindron,
+    [2] = Cx486,
+    [3] = Yengror,
+}
 
 -- header para os menus
 local function printHeader()
@@ -41,28 +46,91 @@ function game.buildScreen()
     end
 end
 
+function game.bossScreen()
+    printHeader()
+    print("ESCOLHA O BOSS QUE DESEJA ENFRENTAR")
+    print("")
+    print("1. Sindron, O Leproso")
+    print("2. CX-486, O Autômato")
+    print("3. Yengror, O Devorador de Montanhas")
+    print("")
+    print("------------------------------")
+    local choice = io.read("n")
+    local bossEscolhido = bosses[choice]
+    if bossEscolhido then
+        return bossEscolhido:new()
+    end
+    return nil
+end
+
 -- função responsável pelos turnos da partida
-function game.turnoIniciar()
+function game.turnoIniciar(boss, user)
     print("------------------------------")
     print("")
-    print("Sindron, O Leproso")
+    print(string.format("%s, %s", boss.nome, boss.titulo))
     print("")
-    print("Descrição: Vindo das terras de Miskogyor, Sindron é um monarca louco por poder que, em busca da imortalidade, acabou contraindo uma rara variante da Lepra causada pelo consumo do sangue de um titã. Por conta disso, O Leproso se tornou um homem fisicamente fraco, mas extremamente perigoso, sendo capaz de imbuir sua lâmina com a doença maldita. Seus ataques são extremamente fortes, mas sua defesa deixa a deseja. Incapaz de desviar por conta de sua condição.")
+    print(string.format("Descrição: %s", boss.descricao))
     print("")
 	print("BOSS:")
-    print(string.format("Vida: %.3f", bossGen.vida))
-    print(string.format("Forca: %.1f", bossGen.forca))
-    print(string.format("Defesa: %.1f", bossGen.defesa))
-    print(string.format("Agilidade: %.1f", bossGen.agilidade))
+    print(string.format("Vida: %.3f", boss.vida))
+    print(string.format("Forca: %.1f", boss.forca))
+    print(string.format("Defesa: %.1f", boss.defesa))
+    print(string.format("Agilidade: %.1f", boss.agilidade))
     print("")
     print("PLAYER:")
-    print(string.format("Vida: %.3f", userGen.vida))
-    print(string.format("Forca: %.1f", userGen.forca))
-    print(string.format("Defesa: %.1f", userGen.defesa))
-    print(string.format("Agilidade: %.1f", userGen.agilidade))
+    print(string.format("Vida: %.3f", user.vida))
+    print(string.format("Forca: %.1f", user.forca))
+    print(string.format("Defesa: %.1f", user.defesa))
+    print(string.format("Agilidade: %.1f", user.agilidade))
     print("")
     print("------------------------------")
     print("")
+    print("AÇÕES:")
+    print("1. Ataque Básico")
+    print("2. guarda")
+    print("")
+    print("------------------------------")
+end
+
+function game.fight(boss, user)
+    while boss:isAlive() and user:isAlive() do
+        if user.guarda then
+            user:baixarGuarda()
+        end
+        game.turnoIniciar(boss, user)
+        local es
+        repeat
+            es = io.read("n")
+            if es ~= 1 and es ~= 2 then
+                print("Escolha errada. Tente novamente.")
+            end
+        until es == 1 or es == 2
+        if es == 1 then -- ataque básico
+            if boss:chanceEsquiva() then
+                print("O boss desviou.")
+        else
+            local danoTomado = user:attack(boss)
+            boss:takeDamage(danoTomado)
+        end
+        elseif es == 2 then -- guarda
+            user:levantarGuarda()
+        end
+        if boss:isDead() then
+            print(string.format("Parabéns! Você derrotou o %s, %s!", boss.nome, boss.titulo))
+            print("")
+            break
+        end
+        if user:chanceEsquiva() then
+            print("Você se esquivou!")
+        else
+            boss:agir(user)
+        end
+        if user:isDead() then
+            print("Você perdeu!")
+            print("")
+            break
+        end
+    end
 end
 
 function game.Start()
@@ -71,45 +139,11 @@ function game.Start()
     while running do
         local choiceUser = game.menuScreen()
         if choiceUser == 1 then
-            while bossGen:isAlive() and userGen:isAlive() do
-                -- inicio do turno do player
-                if userGen.guarda then
-                    userGen:baixarGuarda()
-                end
-                game.turnoIniciar()
-                local es
-                repeat
-                    es = io.read("n")
-                    if es ~= 1 and es ~= 2 then
-                        print("Escolha errada. Tente novamente.")
-                    end
-                until es == 1 or es == 2
-                if es == 1 then -- ataque básico
-                    if bossGen:chanceEsquiva() then
-                        print("O boss desviou.")
-                    else
-                        local danoTomado = userGen:attack(bossGen)
-                        bossGen:takeDamage(danoTomado)
-                    end
-                elseif es == 2 then -- guarda
-                    userGen:levantarGuarda()
-                end
-                if bossGen:isDead() then
-                    print("Parabéns! Você derrotou o chefão!")
-                    print("")
-                    break
-                end
-                if userGen:chanceEsquiva() then
-                    print("Você se esquivou!")
-                else
-                    local danoTomado = bossGen:attack(userGen)
-                    userGen:takeDamage(danoTomado)
-                end
-                if userGen:isDead() then
-                    print("Você perdeu!")
-                    print("")
-                    break
-                end
+            local bossGen = game.bossScreen()
+            if bossGen then
+                local userGen = User:new()
+                game.fight(bossGen, userGen)
+            
             end
         elseif choiceUser == 2 then
             game.buildScreen()
