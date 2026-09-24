@@ -35,10 +35,10 @@ Primeiro protótipo jogável do Boss Fight Simulator.
 * [x] Condição de derrota
 * [ ] Sistema completo de turnos
 * [x] Ação de guarda
-* [ ] Escolha de boss
-* [ ] Sindron, O Leproso
-* [ ] CX-486, O Autômata
-* [ ] Yengror, O Devorador de Montanhas
+* [x] Escolha de boss
+* [x] Sindron, O Leproso
+* [x] CX-486, O Autômata
+* [x] Yengror, O Devorador de Montanhas
 * [ ] Sistema de builds
 * [ ] Distribuição de atributos
 * [ ] Armas
