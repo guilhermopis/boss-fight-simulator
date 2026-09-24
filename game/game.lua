@@ -84,14 +84,14 @@ function game.Start()
                         print("Escolha errada. Tente novamente.")
                     end
                 until es == 1 or es == 2
-                if es == 1 then
+                if es == 1 then -- ataque básico
                     if bossGen:chanceEsquiva() then
                         print("O boss desviou.")
                     else
                         local danoTomado = userGen:attack(bossGen)
                         bossGen:takeDamage(danoTomado)
                     end
-                elseif es == 2 then
+                elseif es == 2 then -- guarda
                     userGen:levantarGuarda()
                 end
                 if bossGen:isDead() then
