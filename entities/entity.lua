@@ -4,7 +4,7 @@ local Entity = class("Entity")
 
 local escalaDefesa <const> = 0.2
 
-function Entity:initialize(vida, vidaMax, dano, forca, defesa, agilidade, guarda)
+function Entity:initialize(vida, vidaMax, dano, forca, defesa, agilidade)
     self.vida = vida
     self.vidaMax = vidaMax
     self.dano = dano
@@ -53,7 +53,7 @@ end
 -- calcula o dano que a entidade irá aplicar
 function Entity:attack(target)
     local damageX = self.dano / (1 + escalaDefesa * target.defesa)
-    local damageX = math.floor(damageX + 0.5)
+    damageX = math.floor(damageX + 0.5)
     return damageX
 end
 

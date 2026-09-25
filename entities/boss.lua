@@ -2,7 +2,7 @@ local Entity = require("entities.entity")
 
 local Boss = Entity:subclass("Boss")
 
-function Boss:initialize(nome, titulo, descricao, vida, vidaMax, dano, forca, defesa, agilidade, guarda)
+function Boss:initialize(nome, titulo, descricao, vida, vidaMax, dano, forca, defesa, agilidade)
     Entity.initialize(
         self,
         vida,
@@ -10,8 +10,7 @@ function Boss:initialize(nome, titulo, descricao, vida, vidaMax, dano, forca, de
         dano,
         forca,
         defesa,
-        agilidade,
-        guarda
+        agilidade
     )
     self.nome = nome
     self.titulo = titulo

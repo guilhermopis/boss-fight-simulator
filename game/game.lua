@@ -2,13 +2,30 @@ local Sindron = require("entities.sindron")
 local Cx486 = require("entities.cx486")
 local Yengror = require("entities.yengror")
 local User = require("entities.user")
+local weapons = require("equipments.items.weapons")
+local armors = require("equipments.items.armors")
 
 local game = {}
 
+-- lista de bosses
 local bosses = {
     [1] = Sindron,
     [2] = Cx486,
     [3] = Yengror,
+}
+
+-- lista de armas
+local weaponOptions = {
+    weapons.espadaLonga,
+    weapons.martelo,
+    weapons.machadoBatalha
+}
+
+-- lista de roupas
+local clothingOptions = {
+    armors.couraca,
+    armors.tunica,
+    armors.chapeu
 }
 
 -- header para os menus
@@ -31,7 +48,7 @@ function game.menuScreen()
 end
 
 -- menu das builds
-function game.buildScreen()
+function game.buildScreen(user)
     local running = true
     while running do
         printHeader()
@@ -40,12 +57,110 @@ function game.buildScreen()
         print("1. Pontos")
         print("2. Roupas")
         print("3. Armas")
+        print("4. Voltar")
         print("")
         print("------------------------------")
         local choice = io.read("n")
+        if choice == 1 then
+            print("")
+        elseif choice == 2 then
+            game.clothingScreen(user)
+        elseif choice == 3 then
+            game.weaponScreen(user)
+        elseif choice == 4 then
+            running = false
+        else
+            print("Opção inválida.")
+        end
     end
 end
 
+-- menu dos pontos, ligado ao menu das builds
+function game.statScreen(user)
+
+end
+
+-- menu das roupas, ligado ao menu das builds
+function game.clothingScreen(user)
+    local running = true
+    while running do
+        printHeader()
+        print("ROUPAS")
+        print("")
+        for i, armor in ipairs(clothingOptions) do
+            print(string.format(
+                "%d. %s | Força: %+.1f | Defesa: %+.1f | Agilidade: %+.1f | Peso: %.1f | %s",
+                i,
+                armor.nome,
+                armor.forca,
+                armor.defesa,
+                armor.agilidade,
+                armor.peso,
+                armor.raridade
+            ))
+        end
+        print("")
+        print("4. Desequipar arma")
+        print("5. Voltar")
+        print("")
+        print("------------------------------")
+        local choice = io.read("n")
+        if clothingOptions[choice] then
+            local armor = clothingOptions[choice]
+            user:equipArmor(armor)
+            print("")
+            print(string.format("%s equipada!", armor.nome))
+        elseif choice == 4 then
+            user:unequipArmor()
+            print("Roupa desequipada.")
+        elseif choice == 5 then
+            running = false
+        else
+            print("Opção inválida.")
+        end
+    end
+end
+
+-- menu das armas, ligado ao menu das builds
+function game.weaponScreen(user)
+    local running = true
+    while running do
+        printHeader()
+        print("ARMAS")
+        print("")
+        for i, weapon in ipairs(weaponOptions) do
+            print(string.format(
+                "%d. %s | Dano: +%.1f | Peso: %.1f | %s",
+                i,
+                weapon.nome,
+                weapon.dano,
+                weapon.peso,
+                weapon.raridade
+            ))
+        end
+        print("")
+        print("4. Desequipar arma")
+        print("5. Voltar")
+        print("")
+        print("------------------------------")
+        local choice = io.read("n")
+        if weaponOptions[choice] then
+            local weapon = weaponOptions[choice]
+            user:equipWeapon(weapon)
+            print("")
+            print(string.format("%s equipada!", weapon.nome))
+        elseif choice == 4 then
+            user:unequipWeapon()
+            print("Arma desequipada.")
+        elseif choice == 5 then
+            running = false
+        else
+            print("Opção inválida.")
+        end
+    end
+end
+
+-- menu de escolha do boss
 function game.bossScreen()
     printHeader()
     print("ESCOLHA O BOSS QUE DESEJA ENFRENTAR")
@@ -92,6 +207,7 @@ function game.turnoIniciar(boss, user)
     print("------------------------------")
 end
 
+-- função responsável pelo combate
 function game.fight(boss, user)
     while boss:isAlive() and user:isAlive() do
         if user.guarda then
@@ -116,7 +232,7 @@ function game.fight(boss, user)
             user:levantarGuarda()
         end
         if boss:isDead() then
-            print(string.format("Parabéns! Você derrotou o %s, %s!", boss.nome, boss.titulo))
+            print(string.format("Parabéns! Você derrotou %s, %s!", boss.nome, boss.titulo))
             print("")
             break
         end
@@ -133,20 +249,21 @@ function game.fight(boss, user)
     end
 end
 
+-- função responsável por iniciar o jogo
 function game.Start()
     local running = true
+    local userGen = User:new()
     os.execute("chcp 65001 > NUL")
     while running do
         local choiceUser = game.menuScreen()
         if choiceUser == 1 then
             local bossGen = game.bossScreen()
             if bossGen then
-                local userGen = User:new()
+                userGen:resetForFight()
                 game.fight(bossGen, userGen)
-            
             end
         elseif choiceUser == 2 then
-            game.buildScreen()
+            game.buildScreen(userGen)
         elseif choiceUser == 3 then
             running = false
         else
