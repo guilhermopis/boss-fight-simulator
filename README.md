@@ -41,8 +41,8 @@ Primeiro protótipo jogável do Boss Fight Simulator.
 * [x] Yengror, O Devorador de Montanhas
 * [ ] Sistema de builds
 * [ ] Distribuição de atributos
-* [ ] Armas
-* [ ] Roupas
+* [x] Armas
+* [x] Roupas
 * [ ] Peso dos equipamentos
 * [ ] Sistema de AP
 * [ ] Habilidades
