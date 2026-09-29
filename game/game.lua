@@ -47,12 +47,45 @@ function game.menuScreen()
     return io.read("n")
 end
 
+function game.inventario(user)
+    print("Equipamentos:")
+    print("")
+    if user.equipment.weapon then
+        print(string.format(
+            "Arma: %s | Dano: +%.1f | Peso: %.1f | %s",
+            user.equipment.weapon.nome,
+            user.equipment.weapon.dano,
+            user.equipment.weapon.peso,
+            user.equipment.weapon.raridade
+        ))
+    else
+        print("Arma: Nenhuma")
+    end
+    if user.equipment.armor then
+        print(string.format(
+            "Roupa: %s | Força: %+.1f | Defesa: %+.1f | Agilidade: %+.1f | Peso: %.1f | %s",
+            user.equipment.armor.nome,
+            user.equipment.armor.forca,
+            user.equipment.armor.defesa,
+            user.equipment.armor.agilidade,
+            user.equipment.armor.peso,
+            user.equipment.armor.raridade
+        ))
+    else
+        print("Roupa: Nenhuma")
+    end
+end
+
 -- menu das builds
 function game.buildScreen(user)
     local running = true
     while running do
         printHeader()
         print("BUILD")
+        print("")
+        game.inventario(user)
+        print("")
+        print("------------------------------")
         print("")
         print("1. Pontos")
         print("2. Roupas")
